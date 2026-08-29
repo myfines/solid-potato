@@ -23,5 +23,10 @@ if(Test-Path -LiteralPath $firewall){
     Write-Output '首次运行需要为 TIA Openness 正式程序登记一次白名单，随后会显示一个 UAC 确认。'
     $arg="-NoProfile -ExecutionPolicy Bypass -File `"$firewall`" -AppRoot `"$target`" -Apply"
     Start-Process -FilePath 'powershell.exe' -Verb RunAs -ArgumentList $arg -Wait
+    $after=Get-ItemProperty 'HKLM:\SOFTWARE\Siemens\Automation\Openness\20.0\Whitelist\TiaPortalMcpServer.exe\Entry' -ErrorAction SilentlyContinue
+    if(-not $after -or $after.Path -ne $info.FullName -or $after.FileHash -ne $hash){
+      Write-Error 'TIA Openness 白名单登记未完成。请在 UAC 窗口点击“是”，然后重新运行 install-agent.cmd。'
+      exit 4
+    }
   } else { Write-Output 'TIA Openness 白名单已是最新，无需再次授权。' }
 }
