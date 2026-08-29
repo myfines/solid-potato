@@ -20,6 +20,7 @@ await client.connect(new StdioClientTransport({command:serverPath,args:['--tia-m
 const tools=(await client.listTools()).tools.map(t=>({type:'function',function:{name:t.name,description:(t.description||'TIA V20 tool').replace(/\s+/g,' ').slice(0,360),parameters:t.inputSchema||{type:'object',properties:{}}}}));
 const helperPath=join(root,'runtime','tia-v20-online-helper.exe');
 const localTools=[
+  {name:'tia_write_text_file',description:'Create or replace a UTF-8 text file for generated SCL/source code. Use this when a requested source file does not exist; returns the absolute path. Requires write permission.',parameters:{type:'object',properties:{path:{type:'string'},content:{type:'string'},overwrite:{type:'boolean',default:false}},required:['path','content']}},
   {name:'tia_online_status',description:'Read TIA V20 online/download provider status without changing state.',parameters:{type:'object',properties:{project:{type:'string'}},required:['project']}},
   {name:'tia_auto_configure',description:'Automatically select a PLCSIM/virtual/softbus interface and configure the project target. Requires confirmation.',parameters:{type:'object',properties:{project:{type:'string'},targetIp:{type:'string'},confirmed:{type:'boolean'}},required:['project','confirmed']}},
   {name:'tia_go_online',description:'Go online with the configured TIA/PLCSIM target. Requires confirmation.',parameters:{type:'object',properties:{project:{type:'string'},confirmed:{type:'boolean'}},required:['project','confirmed']}},
@@ -34,6 +35,7 @@ const dangerous=n=>/create|delete|import|generate|write|apply|compile|save|move|
 const safeRead=n=>n==='projects_open'||n==='projects_get_session_info'||n==='utilities_get_project_info'||n==='devices_list'||n==='tags_list'||n==='blocks_list';
 function log(kind,text){events.push({index:events.length,time:Date.now(),kind,text});if(events.length>10000)events.shift()}
 async function invokeTool(name,toolArgs){
+  if(name==='tia_write_text_file'){const file=String(toolArgs.path||'');if(!file||!file.match(/^[A-Za-z]:[\\/]/))throw Error('必须提供绝对文件路径');if(!toolArgs.overwrite){try{await access(file);throw Error('文件已存在；如需覆盖请明确 overwrite=true')}catch(e){if(e.message.startsWith('文件已存在'))throw e}}await mkdir(dirname(file),{recursive:true});await writeFile(file,String(toolArgs.content||''),'utf8');return {success:true,path:file,bytes:Buffer.byteLength(String(toolArgs.content||''),'utf8')}}
   if(!localNames.has(name))return client.callTool({name,arguments:toolArgs},undefined,{timeout:180000,signal:activeController?.signal});
   try{await access(helperPath)}catch{throw Error('OnlineHelper 未安装')}
   const command={tia_online_status:'status',tia_auto_configure:'auto-configure',tia_go_online:'online',tia_download:'download'}[name];
