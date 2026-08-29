@@ -55,6 +55,8 @@
 - 最新 EXE 对隔离副本执行最小写入测试时，未发生写入崩溃；任务卡在 `projects_open` 的 TIA 冷启动/项目锁等待。
 - 点击“停止”实际返回 HTTP 200，并记录 `用户停止了当前任务`；后续修复使当前 MCP `callTool` 和 OnlineHelper 子进程共享 AbortSignal，停止时会同时取消底层工具。
 - 本次测试没有出现 `tags_create`、`software_add_block` 或保存成功事件，隔离副本未发现新增测试标签文件。
+- 最新最小写入回归已通过：隔离工程 `E:\TIA_AI_FullFlow_Copy\SelfHoldRelay.ap20` 成功写入并保存 `AI_Write_Check`，类型 `Bool`，地址 `%M10.0`；随后使用只读对话重新打开工程并核验到同一标签和绝对路径。写入过程未崩溃。
+- 修复了只读模式错误拦截 `projects_open` 的问题，使写入后的二次核验可以安全重新打开工程。
 - 干净 MCP 原子测试在 projects_open 等待超过 60 秒后收到客户端超时；随后 bridge 也因同一隔离副本锁定而无输出。TIA 报告该项目仍被用户 zrk 打开，异常终止后需等待约 2 分钟。未产生备份或新文件。
 - 已修复 scripts/build-bridge.ps1 的 PowerShell /out: 参数拼接错误；bridge 现在可以成功编译，但项目锁仍需在单会话、正常关闭条件下复测。
 
