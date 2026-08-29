@@ -22,6 +22,8 @@ Use this skill when the task involves operating a TIA Portal V20 project, genera
 - If a requested source file does not exist, use the local file-writing capability to create it. Do not repeatedly try source-generation tools that only export existing blocks.
 - After creating or importing an object, re-read it with the corresponding list/get tool and report the absolute project or file path.
 - For SCL: create the source file, add it as an external source, generate blocks, compile, save, and verify the block/source result.
+- In SCL blocks, reference declared block inputs, outputs, and static/temp variables with the `#` prefix (for example `#Start_Button`, `#Run_Latch`). Quoted names such as `"Start_Button"` refer to global symbols and must not be used for block interface variables.
+- Prefer the composite `tia_apply_scl` tool for write/add/generate/compile/save. If it returns a compile error, report the returned diagnostics and revise the source once with evidence; do not guess or cycle through unrelated source tools.
 - For PLCSIM: automatically discover a PLCSIM/virtual/softbus interface; never substitute a physical Wi-Fi/Ethernet adapter. If standard PLCSIM does not expose a usable target, explain the one-time manual setup required.
 
 ## Output
