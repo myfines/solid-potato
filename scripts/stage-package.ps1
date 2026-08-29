@@ -9,6 +9,7 @@ if(-not (Test-Path (Join-Path $root 'chat\node_modules\@modelcontextprotocol\sdk
 $stamp=Get-Date -Format yyyyMMdd-HHmmss
 $dist=Join-Path $root "dist\tia-v20-agent-$stamp"
 New-Item -ItemType Directory -Force -Path (Join-Path $dist 'runtime'),(Join-Path $dist 'chat'),(Join-Path $dist 'docs'),(Join-Path $dist 'scripts') | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $dist 'skills') | Out-Null
 Get-ChildItem -LiteralPath $runtimeSource -File | Where-Object { $_.Name -notmatch '^Siemens\.Engineering' } | Copy-Item -Destination (Join-Path $dist 'runtime') -Force
 Copy-Item -LiteralPath $onlineHelper -Destination (Join-Path $dist 'runtime') -Force
 $portableNode='E:\simense\SiemensChatAgent\runtime\node.exe'
@@ -30,6 +31,7 @@ Copy-Item -LiteralPath (Join-Path $root 'install-agent.ps1'),(Join-Path $root 'i
 Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination (Join-Path $dist 'README.md')
 Copy-Item -LiteralPath (Join-Path $root 'config\mcp-package.example.json') -Destination (Join-Path $dist 'mcp.example.json')
 Copy-Item -LiteralPath (Join-Path $root 'docs\third-party.md') -Destination (Join-Path $dist 'THIRD-PARTY-SOURCES.txt')
+Copy-Item -LiteralPath (Join-Path $root 'skills\tia-v20-agent') -Destination (Join-Path $dist 'skills') -Recurse -Force
 @('Siemens.Engineering.dll','Siemens.Engineering.Hmi.dll','*.ap20','*.zap20','*.s7dcl','*.s7res') | ForEach-Object { if(Get-ChildItem -Path $dist -Filter $_ -Recurse -ErrorAction SilentlyContinue){throw "Forbidden artifact staged: $_"} }
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'scripts\make-manifest.ps1') -PackageRoot $dist | Out-Null
 Write-Output "Staged proxy-only package: $dist"
