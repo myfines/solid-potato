@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>TiaV20.Core</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TiaPublicApi Condition="'$(TiaPublicApi)' == ''">E:\simense\Portal V20\PublicAPI\V20</TiaPublicApi>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Siemens.Engineering">
+      <HintPath>$(TiaPublicApi)\Siemens.Engineering.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
+

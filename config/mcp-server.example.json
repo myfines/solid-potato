@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "tia-v20-agent": {
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "E:\\vibecoding\\tia-v20-agent\\scripts\\tia-mcp-v20.ps1"
+      ]
+    }
+  }
+}
+

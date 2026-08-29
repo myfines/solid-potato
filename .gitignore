@@ -1,0 +1,33 @@
+# Generated binaries and package outputs
+bin/
+dist/
+vendor/
+chat/node_modules/
+src/**/bin/
+src/**/obj/
+
+# Local installation/test copies
+install-test*/
+testdata/ui-config.json
+_tia-v20-intermediate-trash-*/
+
+# Local secrets and user configuration
+config/*.local.*
+config.json
+**/config.json
+.env
+.env.*
+
+# TIA Portal project and backup formats must never enter this repository
+*.ap20
+*.zap20
+*.s7dcl
+*.s7res
+*.pma*
+*.backup-*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.user
+*.suo

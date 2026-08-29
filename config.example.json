@@ -1,0 +1,20 @@
+{
+  "llm": {
+    "baseUrl": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "apiKey": "在桌面客户端中填写"
+  },
+  "security": {
+    "requireConfirmationForWrites": true,
+    "requireConfirmationForCompile": true,
+    "requireConfirmationForDownload": true,
+    "allowOnlineWrite": false,
+    "backupBeforeMutation": true
+  },
+  "tia": {
+    "preferredVersion": "V20",
+    "installRoot": "",
+    "projectWorkspace": ""
+  }
+}
+

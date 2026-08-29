@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "tia-v20": {
+      "command": "C:\\Users\\<用户>\\AppData\\Local\\TiaV20Agent\\<版本>\\runtime\\TiaPortalMcpServer.exe",
+      "args": ["--tia-major-version", "20", "--logging", "stderr", "--transport", "stdio"]
+    }
+  }
+}
+

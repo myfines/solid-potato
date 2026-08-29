@@ -1,0 +1,8 @@
+{
+  "name": "tia-v20-deepseek-chat",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node deepseek-chat.mjs", "doctor": "node deepseek-chat.mjs --doctor"},
+  "dependencies": {"@modelcontextprotocol/sdk": "^1.30.0"}
+}
+

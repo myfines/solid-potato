@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tia-v20": {
+      "command": "E:\\vibecoding\\tia-v20-agent\\vendor\\chewcw-tia-mcp\\TiaPortalMcpServer\\bin\\Release\\net48\\TiaPortalMcpServer.exe",
+      "args": ["--tia-major-version", "20", "--logging", "stderr", "--transport", "stdio"]
+    }
+  }
+}
