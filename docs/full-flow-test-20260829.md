@@ -49,6 +49,12 @@
 - 已有设备隔离副本 `E:\TIA_AI_FullFlow_Copy\SelfHoldRelay.ap20` 的打开、设备读取、2 个 PLC 块读取、PLC 软件编译和项目保存均通过。
 - 备份已真实生成：`E:\TIA_AI_FullFlow_Backup_20260829`，包含 24 个文件且项目文件存在。
 - PLCSIM 当前未运行；在线/下载闭环未执行，标准 PLCSIM 仍需人工配置实例和接口后复测。
+
+## 写入/停止回归追加
+
+- 最新 EXE 对隔离副本执行最小写入测试时，未发生写入崩溃；任务卡在 `projects_open` 的 TIA 冷启动/项目锁等待。
+- 点击“停止”实际返回 HTTP 200，并记录 `用户停止了当前任务`；后续修复使当前 MCP `callTool` 和 OnlineHelper 子进程共享 AbortSignal，停止时会同时取消底层工具。
+- 本次测试没有出现 `tags_create`、`software_add_block` 或保存成功事件，隔离副本未发现新增测试标签文件。
 - 干净 MCP 原子测试在 projects_open 等待超过 60 秒后收到客户端超时；随后 bridge 也因同一隔离副本锁定而无输出。TIA 报告该项目仍被用户 zrk 打开，异常终止后需等待约 2 分钟。未产生备份或新文件。
 - 已修复 scripts/build-bridge.ps1 的 PowerShell /out: 参数拼接错误；bridge 现在可以成功编译，但项目锁仍需在单会话、正常关闭条件下复测。
 
