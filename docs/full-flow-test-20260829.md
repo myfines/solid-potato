@@ -57,6 +57,8 @@
 - 本次测试没有出现 `tags_create`、`software_add_block` 或保存成功事件，隔离副本未发现新增测试标签文件。
 - 最新最小写入回归已通过：隔离工程 `E:\TIA_AI_FullFlow_Copy\SelfHoldRelay.ap20` 成功写入并保存 `AI_Write_Check`，类型 `Bool`，地址 `%M10.0`；随后使用只读对话重新打开工程并核验到同一标签和绝对路径。写入过程未崩溃。
 - 修复了只读模式错误拦截 `projects_open` 的问题，使写入后的二次核验可以安全重新打开工程。
+- 浏览器复杂任务回归：通过浏览器启用无限模式并提交“备份工程→创建 SCL 文件→添加外部源→生成块→编译→保存”的隔离任务；在 TIA 冷启动等待期间点击停止，最新包只显示“用户已停止当前任务”，没有进入下一轮，服务保持可用。
+- 最新浏览器写入回归：`AI_Browser_Final` 已保存到 `E:\TIA_AI_FullFlow_Copy\SelfHoldRelay.ap20` 的 `默认变量表`，类型 `Bool`，地址 `%M13.0`；左侧显示完整回复，右侧仅显示工具状态和 token 总量。
 - 干净 MCP 原子测试在 projects_open 等待超过 60 秒后收到客户端超时；随后 bridge 也因同一隔离副本锁定而无输出。TIA 报告该项目仍被用户 zrk 打开，异常终止后需等待约 2 分钟。未产生备份或新文件。
 - 已修复 scripts/build-bridge.ps1 的 PowerShell /out: 参数拼接错误；bridge 现在可以成功编译，但项目锁仍需在单会话、正常关闭条件下复测。
 
