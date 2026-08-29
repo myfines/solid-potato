@@ -32,14 +32,14 @@ const events=[]; const history=[{role:'system',content:'你是 TIA Portal V20 �
 const dangerous=n=>/create|delete|import|generate|write|apply|compile|save|move|plug|set|open|close|download|online/i.test(n);
 function log(kind,text){events.push({index:events.length,time:Date.now(),kind,text});if(events.length>200)events.shift()}
 async function invokeTool(name,toolArgs){
-  if(!localNames.has(name))return client.callTool({name,arguments:toolArgs},undefined,{timeout:180000});
+  if(!localNames.has(name))return client.callTool({name,arguments:toolArgs},undefined,{timeout:180000,signal:activeController?.signal});
   try{await access(helperPath)}catch{throw Error('OnlineHelper 未安装')}
   const command={tia_online_status:'status',tia_auto_configure:'auto-configure',tia_go_online:'online',tia_download:'download'}[name];
   const project=String(toolArgs.project||''); if(!project)throw Error('project 参数不能为空');
   const args=[command,project];
   if(name==='tia_auto_configure'&&toolArgs.targetIp)args.push(String(toolArgs.targetIp));
   if(name!=='tia_online_status')args.push('--confirm');
-  const result=await runHelper(helperPath,args,{windowsHide:true,timeout:180000});
+  const result=await runHelper(helperPath,args,{windowsHide:true,timeout:180000,signal:activeController?.signal});
   const text=String(result.stdout||'').trim(); try{return JSON.parse(text)}catch{return {content:[{type:'text',text}]}};
 }
 function callToolWithTimeout(name,toolArgs,ms=180000){return Promise.race([invokeTool(name,toolArgs),new Promise((_,reject)=>setTimeout(()=>reject(Error(`工具 ${name} 超过 ${Math.round(ms/1000)} 秒未返回`)),ms))])}
