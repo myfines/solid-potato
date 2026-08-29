@@ -18,6 +18,6 @@
 - `tia_online_status`：读取 provider 状态。
 - `tia_go_online`、`tia_download`：必须经过本地确认，且不会替用户猜测目标接口。
 
-如果预检显示没有 PLCSIM 接口或目标地址为空，代理会停下来给出引导，不会自动改 Windows 网卡或覆盖工程连接配置。
+如果预检显示没有 PLCSIM 接口或目标地址为空，代理会停下来给出引导，不会自动改 Windows 网卡或覆盖工程连接配置。助手的自动配置会优先尝试名称包含 `PLCSIM`、`virtual` 或 `softbus` 的接口；标准 PLCSIM 没有暴露这类接口时，会明确提示你先在标准 PLCSIM/TIA 中完成一次实例和虚拟路径绑定。
 
 安装包内还提供 `scripts\diagnose-connection-v20.ps1` 和 `scripts\scan-connection-v20.ps1`，用于只读查看当前接口、目标槽位和可访问设备。

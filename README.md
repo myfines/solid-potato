@@ -64,7 +64,7 @@ powershell.exe -ExecutionPolicy Bypass -File .\scripts\setup-environment.ps1
 
 日常操作不依赖 GUI。第一次使用真实 PLC 或标准 PLCSIM 时，TIA 需要初始化一次 PG/PC 或虚拟连接路径，请阅读：[首次连接说明](docs/first-connection.md)。之后由 MCP/Openness 完成工程操作。
 
-标准 PLCSIM 的实例级自动创建/绑定能力有限；PLCSIM Advanced 更适合完全程序化仿真。工具会检测能力并给出下一步，不会擅自修改网卡或真实 PLC。
+标准 PLCSIM 的实例级自动创建/绑定能力有限；助手会自动寻找 PLCSIM/virtual/softbus 连接路径，找不到时停止并提示，不会擅自把 Wi‑Fi 网卡当作仿真目标。PLCSIM Advanced 更适合完全程序化仿真。
 
 ## 安装安全
 
