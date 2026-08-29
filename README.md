@@ -6,7 +6,7 @@
 
 1. 没有 TIA 时，从 Siemens 官方入口获取 V20：[TIA Portal V20 Trial/Download](https://support.industry.siemens.com/cs/document/109963850/simatic-step-7-incl-safety-s7-plcsim-and-wincc-v20-trial-download)。
 2. 解压本代理包到固定目录。
-3. 运行 `install-agent.ps1`。
+3. 双击 `install-agent.cmd`（这是最简单的安装入口；不要担心黑色窗口）。
 4. 打开安装后目录里的 `TiaV20Agent.exe`。
 5. 第一次运行时输入 DeepSeek API Key。
 6. 直接用中文聊天。
@@ -15,7 +15,7 @@
 
 ### 首次 Openness 授权（安装器自动完成）
 
-运行 `install-agent.ps1` 时，安装器会自动检查并登记正式程序。首次安装可能只显示一次 UAC，请点击“是”；以后同一安装目录和同一版本不会重复询问。通常不需要手动执行命令。若自动登记失败，再在管理员 PowerShell 中运行：
+运行 `install-agent.cmd` 时，安装器会自动检查并登记正式程序。首次安装可能只显示一次 UAC，请点击“是”；以后同一安装目录和同一版本不会重复询问。通常不需要手动执行 PowerShell。若自动登记失败，再在管理员 PowerShell 中运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\setup-openness-firewall.ps1 -Apply

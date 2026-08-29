@@ -5,7 +5,7 @@
 你只需要做三件事：
 
 1. 把收到的压缩包解压出来。
-2. 双击 `install-agent.ps1`，安装时如果弹出 Windows 询问，点击“是”。
+2. 双击 `install-agent.cmd`，安装时如果弹出 Windows 询问，点击“是”。
 3. 双击安装目录里的 `TiaV20Agent.exe`，在左侧输入你想做的事，点击“发送”。
 
 示例：

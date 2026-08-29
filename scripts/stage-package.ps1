@@ -26,7 +26,7 @@ Copy-Item -LiteralPath (Join-Path $root 'scripts\setup-openness-firewall.ps1') -
 if(-not (Test-Path (Join-Path $root 'bin\TiaV20Agent.exe'))){& (Join-Path $root 'scripts\build-launcher.ps1') | Out-Null}
 Copy-Item -LiteralPath (Join-Path $root 'bin\TiaV20Agent.exe') -Destination $dist -Force
 Copy-Item -LiteralPath (Join-Path $root 'start-agent.ps1'),(Join-Path $root 'start-agent.cmd') -Destination $dist
-Copy-Item -LiteralPath (Join-Path $root 'install-agent.ps1') -Destination $dist
+Copy-Item -LiteralPath (Join-Path $root 'install-agent.ps1'),(Join-Path $root 'install-agent.cmd') -Destination $dist
 Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination (Join-Path $dist 'README.md')
 Copy-Item -LiteralPath (Join-Path $root 'config\mcp-package.example.json') -Destination (Join-Path $dist 'mcp.example.json')
 Copy-Item -LiteralPath (Join-Path $root 'docs\third-party.md') -Destination (Join-Path $dist 'THIRD-PARTY-SOURCES.txt')
