@@ -14,6 +14,7 @@ Use this skill when the task involves operating a TIA Portal V20 project, genera
 - Do not impose an arbitrary step or round limit. Continue while progress is being made and stop when the task is complete, the user stops it, a tool is unavailable, or the next action requires missing information.
 - Detect identical action/observation loops and stop that loop with a useful explanation instead of retrying indefinitely.
 - Before every mutation, identify the exact project path and target object. Prefer a backup before destructive or broad changes.
+- Before deleting an existing block, tag table, device, or source, call `tia_backup_project` with the complete `.ap20` path and a new backup directory. Never substitute the SCL apply tool for a backup-only operation.
 - When the user enables unrestricted mode, do not ask for repeated in-app confirmations; still report exactly what changed and never claim a download or online connection without a returned success result.
 
 ## Tool selection
