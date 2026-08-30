@@ -43,7 +43,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
     const openPaths=[createdPath,projectDirectory];
     for(const delay of [1500,4000,8000]) {
       await new Promise(resolve=>setTimeout(resolve,delay));
-      for(const openPath of openPaths) { try { await run('projects_open',{path:openPath}); opened=true; break; } catch (error) { lastOpenError=error; } }
+      for(const openPath of openPaths) { try { await run('projects_open',{projectPath:openPath}); opened=true; break; } catch (error) { lastOpenError=error; } }
       if(opened) break;
     }
     if(!opened) throw lastOpenError||new Error(`Unable to open created project: ${createdPath}`);
