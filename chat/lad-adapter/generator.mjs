@@ -516,6 +516,8 @@ function buildLadXml(blockDef) {
       <HeaderFamily />
       <HeaderName />
       <HeaderVersion>0.1</HeaderVersion>
+      <IsIECCheckEnabled>false</IsIECCheckEnabled>
+      <MemoryLayout>Optimized</MemoryLayout>
       <Interface>
         <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
           ${type === 'OB' ? '' : buildSection('Input', iface.input)}
