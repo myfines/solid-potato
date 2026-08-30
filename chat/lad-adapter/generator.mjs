@@ -512,6 +512,10 @@ function buildLadXml(blockDef) {
   <${blockTag} ID="0">
     <AttributeList>
       <AutoNumber>false</AutoNumber>
+      <HeaderAuthor />
+      <HeaderFamily />
+      <HeaderName />
+      <HeaderVersion>0.1</HeaderVersion>
       <Interface>
         <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
           ${buildSection('Input',  iface.input)}
@@ -525,6 +529,7 @@ function buildLadXml(blockDef) {
       <Namespace />
       <Number>${number}</Number>
       <ProgrammingLanguage>LAD</ProgrammingLanguage>
+      <SetENOAutomatically>false</SetENOAutomatically>
     </AttributeList>
     <ObjectList>${networkXmls.join('')}
     </ObjectList>
