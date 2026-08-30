@@ -334,6 +334,25 @@ function emitFlowElements(elements, parts, wires, nextUid, prevUid, prevPin) {
       wires.push(...nonPowerrailWires);
       prevUid = orUid; prevPin = 'out';
 
+    } else if (el.type === 'call') {
+      const callUid = nextUid();
+      const inPin = el.in_pin ?? 'en';
+      const outPin = el.out_pin ?? 'eno';
+      let instanceXml = '';
+      if (el.instance && el.instance.global) {
+        const instUid = nextUid();
+        instanceXml = `<Instance Scope="GlobalVariable" UId="${instUid}"><Component Name="${escXml(el.instance.global)}"/></Instance>`;
+      }
+      parts.push(`<Call UId="${callUid}"><CallInfo Name="${escXml(el.name)}" BlockType="${escXml(el.block_type ?? 'FB')}">${instanceXml}</CallInfo></Call>`);
+      if (prevUid == null) wires.push(`<Wire UId="${nextUid()}"><Powerrail/><NameCon UId="${callUid}" Name="${inPin}"/></Wire>`);
+      else wires.push(`<Wire UId="${nextUid()}"><NameCon UId="${prevUid}" Name="${prevPin}"/><NameCon UId="${callUid}" Name="${inPin}"/></Wire>`);
+      for (const [pinName,pinVal] of Object.entries(el.pins || {})) {
+        if (pinVal == null) continue;
+        const accessUid = nextUid(); const accessXml = emitAccess(pinVal, accessUid);
+        if (accessXml) { parts.push(accessXml); wires.push(`<Wire UId="${nextUid()}"><IdentCon UId="${accessUid}"/><NameCon UId="${callUid}" Name="${escXml(pinName)}"/></Wire>`); }
+      }
+      prevUid = callUid; prevPin = outPin;
+
     } else if (el.type === 'part') {
       const partUid = nextUid();
       const inPin  = el.in_pin  ?? 'EN';
@@ -388,7 +407,7 @@ function emitFlowElements(elements, parts, wires, nextUid, prevUid, prevPin) {
       prevUid = partUid; prevPin = outPin;
 
     } else {
-      throw new Error(`Unknown flow element type: "${el.type}". Valid: contact, coil, parallel, part.`);
+      throw new Error(`Unknown flow element type: "${el.type}". Valid: contact, coil, parallel, call, part.`);
     }
   }
   return { outUid: prevUid, outPin: prevPin };

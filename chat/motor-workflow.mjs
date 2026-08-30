@@ -79,7 +79,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   const lad=await call('tia_build_lad',{projectMatch:name,deviceName,name:'Main',blockType:'OB',blockNumber:1,networks:[{title:'Motor starter FB call',flow:[
     {type:'contact',addr:'%I0.1',negated:true},
     {type:'contact',addr:'%I0.2',negated:true},
-    {type:'part',name:'Motor_Starter',instance:{global:'Motor_Starter_DB'},pins:{
+    {type:'call',name:'Motor_Starter',block_type:'FB',instance:{global:'Motor_Starter_DB'},pins:{
       Start_Button:{global:'Start_Button'},Stop_Button:{global:'Stop_Button'},Emergency_Stop:{global:'Emergency_Stop'},Reset_Button:{global:'Reset_Button'},
       Motor_Run:{global:'Motor_Run'},Run_Lamp:{global:'Run_Lamp'},Fault_Lamp:{global:'Fault_Lamp'}
     }}
