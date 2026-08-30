@@ -68,3 +68,4 @@
 - 2026-08-30 端到端复测：通过网页真实提交 AI_MotorStarter_Test 任务。权限模式生效且未出现权限弹窗；环境预检通过（TIA V20 Openness、.NET 4.8、Openness 用户组、MCP、PLCSIM 均可见）。仓库回归脚本 PASS：隔离项目打开、只读查询、未授权写操作拦截、备份、SCL 应用和块验证均通过。
 - 同次网页复测发现未完成项：`tia_apply_scl` 返回“ SCL 生成程序块失败”，模型随后绕行到 `software_add_block`/`tia_write_text_file`/`blocks_external_source_add`，因此新版服务已将任何 error/blocked 步骤判为任务未完成，禁止伪成功。尚未证明 PLCSIM 实际启动、下载或在线连接。
 - 只读 PLCSIM/在线复核：TIA V20 与 PLCSIM 版本可发现，`device_capabilities` 返回编译可用但 `download=false`、`online=false`；`plcsim_status` 显示标准 PLCSIM 当前未运行，8100/8101 未监听；`device_connection_targets` 返回 `Online provider unavailable for device.`。因此当前机器只能证明安装与 Openness 编译链可用，不能宣称标准 PLCSIM 下载/在线闭环通过。
+- 标准 PLCSIM 启动实测：`plcsim_launch(confirmed=true)` 成功启动 `S7PLCSIMV20.exe`（PID 3760），随后状态读取确认进程运行且 8100 监听；测试结束后已关闭该测试进程。启动能力通过，但工程在线 Provider 仍不可用，下载/上线未执行。
