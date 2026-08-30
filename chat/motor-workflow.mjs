@@ -25,9 +25,13 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
     const created=await run('projects_create',{name,path:projectDirectory});
     const createdPath=findProjectPath(created)||`${projectDirectory}\\${name}.ap20`;
-    await new Promise(resolve=>setTimeout(resolve,1500));
-    try { await run('projects_open',{path:createdPath}); }
-    catch (firstOpenError) { await new Promise(resolve=>setTimeout(resolve,2500)); await run('projects_open',{path:createdPath}); }
+    let opened=false; let lastOpenError;
+    for(const delay of [1500,4000,8000]) {
+      await new Promise(resolve=>setTimeout(resolve,delay));
+      try { await run('projects_open',{path:createdPath}); opened=true; break; }
+      catch (error) { lastOpenError=error; }
+    }
+    if(!opened) throw lastOpenError||new Error(`Unable to open created project: ${createdPath}`);
   } else if(!sessionText.includes(name)) {
     throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
