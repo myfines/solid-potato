@@ -1,4 +1,16 @@
 const defaultOrderNumber='6ES7 214-1BG40-0XB0';
+function findProjectPath(result){
+  const seen=new Set();
+  const visit=value=>{
+    if(value==null||seen.has(value))return null;
+    if(typeof value==='string'){if(/\.(ap20|ap19|ap18)$/i.test(value))return value;try{return visit(JSON.parse(value))}catch{return null}}
+    if(typeof value!=='object')return null; seen.add(value);
+    for(const key of ['path','projectPath','filePath']){if(value[key]){const found=visit(value[key]);if(found)return found}}
+    for(const value2 of Object.values(value)){const found=visit(value2);if(found)return found}
+    return null;
+  };
+  return visit(result);
+}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call}) {
   const stepResults=[];
@@ -11,8 +23,9 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   const session=await run('projects_get_session_info',{});
   const sessionText=JSON.stringify(session);
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
-    await run('projects_create',{name,path:projectDirectory});
-    await run('projects_open',{path:`${projectDirectory}\\${name}.ap20`});
+    const created=await run('projects_create',{name,path:projectDirectory});
+    const createdPath=findProjectPath(created)||`${projectDirectory}\\${name}.ap20`;
+    await run('projects_open',{path:createdPath});
   } else if(!sessionText.includes(name)) {
     throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
