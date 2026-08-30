@@ -23,7 +23,18 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   const session=await run('projects_get_session_info',{});
   const sessionText=JSON.stringify(session);
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
-    const created=await run('projects_create',{name,path:projectDirectory});
+    let created;
+    try { created=await run('projects_create',{name,path:projectDirectory}); }
+    catch (createError) {
+      const message=String(createError?.message||createError);
+      if(!/already open|project.*open|已有.*工程/i.test(message)) throw createError;
+      stepResults.push({tool:'session_cleanup_warning',success:false,message:'检测到已有工程；即将关闭当前工程后继续隔离测试'});
+      const current=await call('projects_get_session_info',{});
+      const currentPath=findProjectPath(current);
+      if(currentPath&&backupPath) await call('tia_backup_project',{project:currentPath,backupPath:`${backupPath}\\ExistingProject_Before_AutoClose`});
+      await run('projects_close',{});
+      created=await run('projects_create',{name,path:projectDirectory});
+    }
     const createdPath=findProjectPath(created)||`${projectDirectory}\\${name}.ap20`;
     let opened=false; let lastOpenError;
     const openPaths=[createdPath,projectDirectory];
