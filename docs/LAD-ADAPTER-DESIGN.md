@@ -28,6 +28,6 @@
 
 ## 当前状态
 
-当前实现已包含 `tia_build_lad` 和同一 MCP 会话内的 `blocks_import_xml`；LAD XML 生成器、OB1 元数据、OB 接口段和项目文化已通过修正。使用独立 TIA UI 附着脚本的实际导入/编译已通过（Imported=true、Compiled=true、Errors=0），但网页端最终调用仍需在浏览器连接恢复后复测确认。当前不宣称网页 LAD 全流程已完成，直到该复测通过。
+当前实现已包含 `tia_build_lad` 和同一 MCP 会话内的 `blocks_import_xml`；LAD XML 生成器、OB1 元数据、OB 接口段和项目文化已通过修正。网页端原子工作流已实测通过，TIA V20 中实际打开的 `Main [OB1]` 已显示非空 LAD 网络，编译结果为 0 错误、0 警告。工程创建、SCL、标签、备份、LAD 导入和编译均走 MCP/Openness；桌面 UI 只用于最终只读验收，不参与工程操作。
 
-最新前端目录查询已通过懒加载路径，确认 CPU 订货号 `6ES7 214-1BG40-0XB0`、Type Identifier `OrderNumber:6ES7 214-1BG40-0XB0/V4.7`。完整电机工作流复测中，项目创建/打开成功，但模型仍重复 `projects_open`，尚未进入设备和 LAD 阶段；这部分需要原子电机工作流工具收敛。
+最新前端目录查询已通过懒加载路径，确认 CPU 订货号 `6ES7 214-1BG40-0XB0`、Type Identifier `OrderNumber:6ES7 214-1BG40-0XB0/V4.7`。完整电机工作流已在干净单实例环境中通过：项目创建/打开、设备、I/Q 标签、Motor_Starter FB/实例 DB、Main/OB1 LAD、备份和编译均成功。
