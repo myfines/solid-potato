@@ -41,3 +41,7 @@
 ## 最新前端全流程复测
 
 单一 8766 前端会话实测通过：项目 `AI_MotorStarter_GoalTest` 创建、S7-1200 创建设备、7 个标签创建、项目保存、外部备份、`tia_apply_scl` 和编译均成功；第 10 轮正常结束，未下载、未上线，未出现权限弹窗或死循环。该结果不改变标准 PLCSIM 在线 Provider 尚未可用的结论。
+
+## 原子电机工作流最终复测
+
+单一 8766 前端会话中，`tia_build_motor_project` 单次调用成功（约 118 秒）。工程 `AI_MotorStarter_FinalVerified2`、外部备份、`Motor_Starter` FB/实例 DB SCL 源文件均已落盘；前端显示“已完成隔离工程创建、备份、SCL 生成和编译”，任务未下载、未上线，未发生重复工具调用。
