@@ -24,11 +24,12 @@ function findTagTableName(result){
   return visit(result);
 }
 
-export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call}) {
+export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}}) {
   const stepResults=[];
   const run=async(tool, args)=>{
-    const result=await call(tool,args);
+    report('running',`工作流步骤：${tool}`); const stepStarted=Date.now(); const result=await call(tool,args);
     if(result?.isError) throw new Error(`${tool} failed: ${JSON.stringify(result.structuredContent||result.content||result)}`);
+    report('success',`工作流步骤：${tool} 完成（${Date.now()-stepStarted}ms）`);
     stepResults.push({tool,success:true});
     return result;
   };
@@ -75,9 +76,11 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   await run('projects_save',{});
   if(backupPath) await call('tia_backup_project',{project:activeProjectPath||`${projectDirectory}\\${name}.ap20`,backupPath});
   const fbSource=`FUNCTION_BLOCK "Motor_Starter"\nVERSION : 0.1\nVAR_INPUT\n Start_Button : Bool;\n Stop_Button : Bool;\n Emergency_Stop : Bool;\n Reset_Button : Bool;\nEND_VAR\nVAR_OUTPUT\n Motor_Run : Bool;\n Run_Lamp : Bool;\n Fault_Lamp : Bool;\nEND_VAR\nVAR\n Fault_Active : Bool;\nEND_VAR\nBEGIN\n IF #Emergency_Stop THEN\n  #Fault_Active := TRUE;\n END_IF;\n IF #Reset_Button AND NOT #Emergency_Stop THEN\n  #Fault_Active := FALSE;\n END_IF;\n IF #Stop_Button OR #Emergency_Stop OR #Fault_Active THEN\n  #Motor_Run := FALSE;\n ELSIF #Start_Button THEN\n  #Motor_Run := TRUE;\n END_IF;\n #Run_Lamp := #Motor_Run;\n #Fault_Lamp := #Fault_Active;\nEND_FUNCTION_BLOCK\n\nDATA_BLOCK "Motor_Starter_DB" "Motor_Starter"\nBEGIN\nEND_DATA_BLOCK`;
-  await call('tia_apply_scl',{project:activeProjectPath||`${projectDirectory}\\${name}.ap20`,deviceName,sourceName:'Motor_Starter_FB_DB_Source',filePath:`${projectDirectory}\\${name}_Motor_Starter_FB_DB.scl`,content:fbSource,overwrite:true});
+  report('running','工作流步骤：生成并编译 Motor_Starter SCL'); const sclStarted=Date.now(); await call('tia_apply_scl',{project:activeProjectPath||`${projectDirectory}\\${name}.ap20`,deviceName,sourceName:'Motor_Starter_FB_DB_Source',filePath:`${projectDirectory}\\${name}_Motor_Starter_FB_DB.scl`,content:fbSource,overwrite:true}); report('success',`工作流步骤：Motor_Starter SCL 完成（${Date.now()-sclStarted}ms）`);
+  report('running','工作流步骤：生成 Main/OB1 LAD'); const ladStarted=Date.now();
   const lad=await call('tia_build_lad',{projectMatch:name,deviceName,name:'Main',blockType:'OB',blockNumber:1,networks:[{title:'Motor starter',rungs:[{contacts:[{addr:'%I0.0'},{addr:'%I0.1',negated:true},{addr:'%I0.2',negated:true}],coil:{addr:'%Q0.0'}}]}]});
   if(lad?.isError) throw new Error(`tia_build_lad failed: ${JSON.stringify(lad.structuredContent||lad.content||lad)}`);
+  report('success',`工作流步骤：Main/OB1 LAD 完成（${Date.now()-ladStarted}ms）`);
   const compile=await run('compilation_software',{deviceName});
   return {success:true,project:`${projectDirectory}\\${name}.ap20`,backupPath,deviceName,orderNumber,steps:stepResults,lad,compile};
 }
