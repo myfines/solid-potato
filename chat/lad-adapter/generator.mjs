@@ -518,11 +518,12 @@ function buildLadXml(blockDef) {
       <HeaderVersion>0.1</HeaderVersion>
       <Interface>
         <Sections xmlns="http://www.siemens.com/automation/Openness/SW/Interface/v5">
-          ${buildSection('Input',  iface.input)}
-          ${buildSection('Output', iface.output)}
-          ${buildSection('InOut',  iface.inout)}
+          ${type === 'OB' ? '' : buildSection('Input', iface.input)}
+          ${type === 'OB' ? '' : buildSection('Output', iface.output)}
+          ${type === 'OB' ? '' : buildSection('InOut', iface.inout)}
           ${type === 'FB' ? buildSection('Static', iface.static ?? iface.stat) : ''}
-          ${buildSection('Temp',   iface.temp)}${returnSection}
+          ${buildSection('Temp', iface.temp)}
+          ${type === 'OB' ? '<Section Name="Constant"/>' : ''}${returnSection}
         </Sections>
       </Interface>
       <Name>${name}</Name>
