@@ -33,6 +33,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
     return result;
   };
   const session=await run('projects_get_session_info',{});
+  let activeProjectPath=findProjectPath(session)||'';
   const sessionText=JSON.stringify(session);
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
     let created;
@@ -59,6 +60,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
       if(opened) break;
     }
     if(!opened) throw lastOpenError||new Error(`Unable to open created project: ${createdPath}`);
+    activeProjectPath=createdPath;
   } else if(!sessionText.includes(name)) {
     throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
@@ -71,7 +73,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   ];
   for(const [tagName,logicalAddress] of tags) await run('tags_create',{deviceName,tagTableName,tagName,dataType:'Bool',logicalAddress});
   await run('projects_save',{});
-  if(backupPath) await call('tia_backup_project',{project:`${projectDirectory}\\${name}.ap20`,backupPath});
+  if(backupPath) await call('tia_backup_project',{project:activeProjectPath||`${projectDirectory}\\${name}.ap20`,backupPath});
   const lad=await call('tia_build_lad',{projectMatch:name,deviceName,name:'Main',blockType:'OB',blockNumber:1,networks:[{title:'Motor starter',rungs:[{contacts:[{addr:'%I0.0'},{addr:'%I0.1',negated:true},{addr:'%I0.2',negated:true}],coil:{addr:'%Q0.0'}}]}]});
   if(lad?.isError) throw new Error(`tia_build_lad failed: ${JSON.stringify(lad.structuredContent||lad.content||lad)}`);
   const compile=await run('compilation_software',{deviceName});
