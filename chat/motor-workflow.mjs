@@ -13,6 +13,8 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
     await run('projects_create',{name,path:projectDirectory});
     await run('projects_open',{path:`${projectDirectory}\\${name}.ap20`});
+  } else if(!sessionText.includes(name)) {
+    throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
   await run('devices_create',{deviceName,orderNumber,dryRun:false});
   const tags=[
