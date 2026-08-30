@@ -468,14 +468,14 @@ function buildLadXml(blockDef) {
           <MultilingualText ID="${nextUid()}" CompositionName="Comment">
             <ObjectList>
               <MultilingualTextItem ID="${nextUid()}" CompositionName="Items">
-                <AttributeList><Culture>en-US</Culture><Text>${commentText}</Text></AttributeList>
+                <AttributeList><Culture>zh-CN</Culture><Text>${commentText}</Text></AttributeList>
               </MultilingualTextItem>
             </ObjectList>
           </MultilingualText>
           <MultilingualText ID="${nextUid()}" CompositionName="Title">
             <ObjectList>
               <MultilingualTextItem ID="${nextUid()}" CompositionName="Items">
-                <AttributeList><Culture>en-US</Culture><Text>${titleText}</Text></AttributeList>
+                <AttributeList><Culture>zh-CN</Culture><Text>${titleText}</Text></AttributeList>
               </MultilingualTextItem>
             </ObjectList>
           </MultilingualText>
@@ -495,7 +495,7 @@ function buildLadXml(blockDef) {
     if (!Array.isArray(members) || members.length === 0) return `<Section Name="${sectionName}"/>`;
     const mXml = members.map(m => {
       const commentXml = m.comment
-        ? `<Comment><MultiLanguageText Lang="en-US">${escXml(m.comment)}</MultiLanguageText></Comment>`
+        ? `<Comment><MultiLanguageText Lang="zh-CN">${escXml(m.comment)}</MultiLanguageText></Comment>`
         : '';
       const startVal = m.startValue ? `<StartValue>${escXml(m.startValue)}</StartValue>` : '';
       const inner = commentXml + startVal;
