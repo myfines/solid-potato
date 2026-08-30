@@ -37,3 +37,7 @@
 ## 发布判断
 
 当前适合发布为“TIA V20 工程读写、备份、SCL/MCP 自动化测试版”，不适合宣称“标准 PLCSIM/真实 PLC 全自动下载上线版”。发布前仍应修复网页 `tia_apply_scl` 的 SCL 兼容性，并在具备可用 Online Provider 的 PLCSIM Advanced 或明确配置的目标上重新验证下载链路。
+
+## 最新前端全流程复测
+
+单一 8766 前端会话实测通过：项目 `AI_MotorStarter_GoalTest` 创建、S7-1200 创建设备、7 个标签创建、项目保存、外部备份、`tia_apply_scl` 和编译均成功；第 10 轮正常结束，未下载、未上线，未出现权限弹窗或死循环。该结果不改变标准 PLCSIM 在线 Provider 尚未可用的结论。
