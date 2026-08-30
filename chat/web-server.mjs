@@ -34,6 +34,7 @@ tools.push(...localTools);
 const localNames=new Set(localTools.map(t=>t.function.name));
 const runHelper=promisify(execFile);
 const events=[]; const history=[{role:'system',content:'你是 TIA Portal V20 中文工程助手。理解用户的自然语言目标，自动拆解为检查、备份、修改、编译和报告步骤。默认只读；只有在客户端允许写操作时才执行修改、编译、保存、上线或下载。禁止重复无意义地搜索同一目录；工具已返回结果后直接使用。'}];
+history[0].content+=' V20 SCL 规则：VAR_INPUT/VAR_OUTPUT/VAR 区域内声明变量名不要加 #，BEGIN 后引用变量必须加 #；FUNCTION_BLOCK 必须有完整的 VAR 区域和 END_FUNCTION_BLOCK；优先使用 tia_apply_scl 一次完成备份、写入、生成、编译、保存。原子工具失败时不得拆散流程后宣称成功，必须继续修复或明确报告失败。';
 function repairHistory(){for(let i=0;i<history.length;i++){const m=history[i];if(m?.role!=='assistant'||!Array.isArray(m.tool_calls)||!m.tool_calls.length)continue;const ids=new Set();let j=i+1;while(j<history.length&&history[j]?.role==='tool'){if(history[j].tool_call_id)ids.add(history[j].tool_call_id);j++}const missing=m.tool_calls.filter(c=>c.id&&!ids.has(c.id));if(missing.length){history.splice(j,0,...missing.map(c=>({role:'tool',tool_call_id:c.id,content:JSON.stringify({error:'上一轮任务被中断，工具未执行'})})));i=j+missing.length-1}}}if(history.length>1){history.splice(1)}
 const dangerous=n=>/create|delete|import|generate|write|apply|compile|save|move|plug|set|open|close|download|online/i.test(n);
 const safeRead=n=>n==='projects_open'||n==='projects_get_session_info'||n==='utilities_get_project_info'||n==='devices_list'||n==='tags_list'||n==='blocks_list';
