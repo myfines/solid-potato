@@ -14,7 +14,7 @@ Get-ChildItem -LiteralPath $runtimeSource -File | Where-Object { $_.Name -notmat
 Copy-Item -LiteralPath $onlineHelper -Destination (Join-Path $dist 'runtime') -Force
 $portableNode='E:\simense\SiemensChatAgent\runtime\node.exe'
 if(Test-Path $portableNode){Copy-Item -LiteralPath $portableNode -Destination (Join-Path $dist 'runtime') -Force}
-Copy-Item -LiteralPath (Join-Path $root 'chat\deepseek-chat.mjs'),(Join-Path $root 'chat\web-server.mjs'),(Join-Path $root 'chat\package.json'),(Join-Path $root 'chat\package-lock.json'),(Join-Path $root 'chat\README.md') -Destination (Join-Path $dist 'chat')
+Copy-Item -LiteralPath (Join-Path $root 'chat\deepseek-chat.mjs'),(Join-Path $root 'chat\web-server.mjs'),(Join-Path $root 'chat\motor-workflow.mjs'),(Join-Path $root 'chat\package.json'),(Join-Path $root 'chat\package-lock.json'),(Join-Path $root 'chat\README.md') -Destination (Join-Path $dist 'chat')
 New-Item -ItemType Directory -Force -Path (Join-Path $dist 'chat\lad-adapter') | Out-Null
 Copy-Item -LiteralPath (Join-Path $root 'chat\lad-adapter\generator.mjs'),(Join-Path $root 'chat\lad-adapter\ps-runner.js'),(Join-Path $root 'chat\lad-adapter\write-block.ps1') -Destination (Join-Path $dist 'chat\lad-adapter')
 Copy-Item -LiteralPath (Join-Path $root 'chat\node_modules') -Destination (Join-Path $dist 'chat') -Recurse
