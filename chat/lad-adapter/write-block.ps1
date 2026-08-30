@@ -18,7 +18,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$dll = "C:\Program Files\Siemens\Automation\Portal V20\PublicAPI\V20\Siemens.Engineering.dll"
+$dllCandidates = @(
+    'E:\simense\Portal V20\PublicAPI\V20\Siemens.Engineering.dll',
+    "$env:ProgramFiles\Siemens\Automation\Portal V20\PublicAPI\V20\Siemens.Engineering.dll",
+    "${env:ProgramFiles(x86)}\Siemens\Automation\Portal V20\PublicAPI\V20\Siemens.Engineering.dll"
+)
+$dll = $dllCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+if (-not $dll) { throw "TIA V20 Openness DLL not found. Checked: $($dllCandidates -join '; ')" }
 [System.Reflection.Assembly]::LoadFrom($dll) | Out-Null
 
 function Invoke-GenericGetService {
