@@ -32,7 +32,10 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
       const current=await call('projects_get_session_info',{});
       const currentPath=findProjectPath(current);
       if(currentPath&&backupPath) await call('tia_backup_project',{project:currentPath,backupPath:`${backupPath}\\ExistingProject_Before_AutoClose`});
-      await run('projects_close',{});
+      try { await run('projects_close',{}); } catch (closeError) {
+        if(!/no project|没有工程/i.test(String(closeError?.message||closeError))) throw closeError;
+      }
+      await new Promise(resolve=>setTimeout(resolve,1000));
       created=await run('projects_create',{name,path:projectDirectory});
     }
     const createdPath=findProjectPath(created)||`${projectDirectory}\\${name}.ap20`;
