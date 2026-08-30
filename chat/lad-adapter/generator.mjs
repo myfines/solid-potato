@@ -528,6 +528,7 @@ function buildLadXml(blockDef) {
       <Name>${name}</Name>
       <Namespace />
       <Number>${number}</Number>
+      ${type === 'OB' ? '<SecondaryType>ProgramCycle</SecondaryType>' : ''}
       <ProgrammingLanguage>LAD</ProgrammingLanguage>
       <SetENOAutomatically>false</SetENOAutomatically>
     </AttributeList>
