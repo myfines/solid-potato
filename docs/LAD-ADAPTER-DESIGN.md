@@ -28,4 +28,4 @@
 
 ## 当前状态
 
-现有 MCP 已能完成项目、设备、标签、SCL 外部源和编译；尚未包含 LAD `FlgNet` 生成/导入工具。该适配器实现完成并在隔离 V20 工程通过验收前，不宣称 LAD 已支持。
+当前实现已包含 `tia_build_lad` 和同一 MCP 会话内的 `blocks_import_xml`；LAD XML 生成器、OB1 元数据、OB 接口段和项目文化已通过修正。使用独立 TIA UI 附着脚本的实际导入/编译已通过（Imported=true、Compiled=true、Errors=0），但网页端最终调用仍需在浏览器连接恢复后复测确认。当前不宣称网页 LAD 全流程已完成，直到该复测通过。
