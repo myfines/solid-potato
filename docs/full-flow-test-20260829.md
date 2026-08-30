@@ -55,6 +55,7 @@
 - 最新 EXE 对隔离副本执行最小写入测试时，未发生写入崩溃；任务卡在 `projects_open` 的 TIA 冷启动/项目锁等待。
 - 点击“停止”实际返回 HTTP 200，并记录 `用户停止了当前任务`；后续修复使当前 MCP `callTool` 和 OnlineHelper 子进程共享 AbortSignal，停止时会同时取消底层工具。
 - 本次测试没有出现 `tags_create`、`software_add_block` 或保存成功事件，隔离副本未发现新增测试标签文件。
+- 最新隔离修复闭环已通过：`E:\AI_MotorStarter_Test\AI_MotorStarter_Test\AI_MotorStarter_Test.ap20` 先备份到 `E:\AI_MotorStarter_Test\Backup_Remove_MotorControl`，确认并删除损坏块 `Motor_Control`，保留 `MotorControl_Atomic`，随后编译返回 `Success`，diagnostics 为 `No block was compiled. All blocks are up-to-date.` 和 `Compiling finished (errors: 0; warnings: 0)`，项目保存成功。
 - 最新最小写入回归已通过：隔离工程 `E:\TIA_AI_FullFlow_Copy\SelfHoldRelay.ap20` 成功写入并保存 `AI_Write_Check`，类型 `Bool`，地址 `%M10.0`；随后使用只读对话重新打开工程并核验到同一标签和绝对路径。写入过程未崩溃。
 - 修复了只读模式错误拦截 `projects_open` 的问题，使写入后的二次核验可以安全重新打开工程。
 - 浏览器复杂任务回归：通过浏览器启用无限模式并提交“备份工程→创建 SCL 文件→添加外部源→生成块→编译→保存”的隔离任务；在 TIA 冷启动等待期间点击停止，最新包只显示“用户已停止当前任务”，没有进入下一轮，服务保持可用。
