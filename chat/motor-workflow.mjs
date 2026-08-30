@@ -11,6 +11,18 @@ function findProjectPath(result){
   };
   return visit(result);
 }
+function findTagTableName(result){
+  const seen=new Set();
+  const visit=value=>{
+    if(value==null||seen.has(value))return null;
+    if(typeof value==='string'){try{return visit(JSON.parse(value))}catch{return null}}
+    if(typeof value!=='object')return null; seen.add(value);
+    for(const key of ['name','tableName','tagTableName']) if(typeof value[key]==='string'&&value[key]) return value[key];
+    for(const value2 of Object.values(value)){const found=visit(value2);if(found)return found}
+    return null;
+  };
+  return visit(result);
+}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call}) {
   const stepResults=[];
@@ -51,11 +63,13 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
     throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
   await run('devices_create',{deviceName,orderNumber,dryRun:false});
+  const tagTables=await run('tags_tagtable_list',{deviceName,includeCounts:false});
+  const tagTableName=findTagTableName(tagTables)||'System';
   const tags=[
     ['Start_Button','%I0.0'],['Stop_Button','%I0.1'],['Emergency_Stop','%I0.2'],['Reset_Button','%I0.3'],
     ['Motor_Run','%Q0.0'],['Run_Lamp','%Q0.1'],['Fault_Lamp','%Q0.2']
   ];
-  for(const [tagName,logicalAddress] of tags) await run('tags_create',{deviceName,tagTableName:'Default tag table',tagName,dataType:'Bool',logicalAddress});
+  for(const [tagName,logicalAddress] of tags) await run('tags_create',{deviceName,tagTableName,tagName,dataType:'Bool',logicalAddress});
   await run('projects_save',{});
   if(backupPath) await call('tia_backup_project',{project:`${projectDirectory}\\${name}.ap20`,backupPath});
   const lad=await call('tia_build_lad',{projectMatch:name,deviceName,name:'Main',blockType:'OB',blockNumber:1,networks:[{title:'Motor starter',rungs:[{contacts:[{addr:'%I0.0'},{addr:'%I0.1',negated:true},{addr:'%I0.2',negated:true}],coil:{addr:'%Q0.0'}}]}]});
