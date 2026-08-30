@@ -38,7 +38,7 @@ const localNames=new Set(localTools.map(t=>t.function.name));
 localNames.add('tia_build_motor_project');
 const runHelper=promisify(execFile);
 const events=[]; const history=[{role:'system',content:'你是 TIA Portal V20 中文工程助手。理解用户的自然语言目标，自动拆解为检查、备份、修改、编译和报告步骤。默认只读；只有在客户端允许写操作时才执行修改、编译、保存、上线或下载。禁止重复无意义地搜索同一目录；工具已返回结果后直接使用。'}];
-history[0].content+=' V20 SCL 规则：VAR_INPUT/VAR_OUTPUT/VAR 区域内声明变量名不要加 #，BEGIN 后引用变量必须加 #；FUNCTION_BLOCK 必须有完整的 VAR 区域和 END_FUNCTION_BLOCK；优先使用 tia_apply_scl 一次完成备份、写入、生成、编译、保存。原子工具失败时不得拆散流程后宣称成功，必须继续修复或明确报告失败。';
+history[0].content+=' V20 SCL 规则：VAR_INPUT/VAR_OUTPUT/VAR 区域内声明变量名不要加 #，BEGIN 后引用变量必须加 #；FUNCTION_BLOCK 必须有完整的 VAR 区域和 END_FUNCTION_BLOCK；优先使用 tia_apply_scl 一次完成备份、写入、生成、编译、保存。原子工具失败时不得拆散流程后宣称成功，必须继续修复或明确报告失败。对于用户要求新建隔离电机项目的任务，必须优先且只调用 tia_build_motor_project 完成项目、设备、标签、SCL、FB/DB、Main/OB1 LAD、备份和编译；禁止自行拆成 software_add_block、tia_apply_scl、blocks_list 等普通工具组合。';
 history[0].content+=' 对包含 Start_Button、Stop_Button、Emergency_Stop、Reset_Button、Motor_Run、Run_Lamp、Fault_Lamp 的电机任务，必须生成 FUNCTION_BLOCK，不得生成 FUNCTION/Void，不得把全局标签当作块接口；生成前自行检查接口、END_VAR、BEGIN 和 END_FUNCTION_BLOCK。';
 history[0].content+=' 可运行工程还必须创建或确认 Main/OB1，并在 OB1 中用实例 DB 调用该 FB；PLC 标签必须使用实际逻辑地址（默认 Start I0.0、Stop I0.1、Emergency I0.2、Reset I0.3、Motor Q0.0、RunLamp Q0.1、FaultLamp Q0.2），不得把 false/true 常量当作最终接线。当前没有可靠 LAD 网络编辑工具时，不得声称已生成 LAD，应报告边界；可用 ORGANIZATION_BLOCK 外部 SCL 作为 OB1 调用实现。';
 history[0].content+=' 如果 projects_get_session_info 表明没有打开工程，且用户要求创建隔离工程，不要调用 utilities_elicit_user_input；应先用 projects_create 创建工程、projects_open 打开、devices_search_catalog/devices_create 创建设备，再继续 LAD/SCL 流程。只有用户明确要求操作既有工程但未提供路径时才请求输入。';
