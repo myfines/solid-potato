@@ -45,7 +45,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
       if(/非空|not empty|cannot be created under/i.test(message)) {
         effectiveProjectDirectory=`${projectDirectory}\\${name}_Run_${Date.now()}`;
         report('warning',`目标目录已有工程，保留旧工程并改用隔离目录：${effectiveProjectDirectory}`);
-        created=await run('projects_create',{name,path:effectiveProjectDirectory});
+        created=await run('projects_create',{name,path:effectiveProjectDirectory,retry:true});
       } else {
       if(!/already open|project.*open|已有.*工程/i.test(message)) throw createError;
       stepResults.push({tool:'session_cleanup_warning',success:false,message:'检测到已有工程；即将关闭当前工程后继续隔离测试'});
