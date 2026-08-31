@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readdir } from 'node:fs/promises';
 const defaultOrderNumber='6ES7 214-1BG40-0XB0';
 function findProjectPath(result){
   const seen=new Set();
@@ -24,6 +24,7 @@ function findTagTableName(result){
   };
   return visit(result);
 }
+async function hasEntries(path){try{return (await readdir(path)).length>0}catch{return false}}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}}) {
   const stepResults=[];
@@ -40,6 +41,11 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   const sessionText=JSON.stringify(session);
   if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
     let created;
+    if(await hasEntries(`${projectDirectory}\\${name}`)) {
+      effectiveProjectDirectory=`${projectDirectory}\\${name}_Run_${Date.now()}`;
+      await mkdir(effectiveProjectDirectory,{recursive:true});
+      report('warning',`目标目录已有工程，直接使用隔离目录：${effectiveProjectDirectory}`);
+    }
     try { created=await run('projects_create',{name,path:effectiveProjectDirectory}); }
     catch (createError) {
       const message=String(createError?.message||createError);
