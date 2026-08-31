@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 const execFileAsync=promisify(execFile);
+process.on('uncaughtException',error=>console.error('[TIA V20 AI] uncaught exception:',error));
+process.on('unhandledRejection',error=>console.error('[TIA V20 AI] unhandled rejection:',error));
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
