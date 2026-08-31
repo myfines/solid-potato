@@ -85,7 +85,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   await run('devices_create',{deviceName,orderNumber,dryRun:false});
   const tagTables=await run('tags_tagtable_list',{deviceName,includeCounts:false});
   const tagTableName=findTagTableName(tagTables)||'System';
-  const tags=customTags?.length?customTags:[
+  const tags=customTags?.length?customTags.map(tag=>Array.isArray(tag)?tag:[tag.tagName||tag.name,tag.logicalAddress||tag.address||tag.addr]):[
     ['Start_Button','%I0.0'],['Stop_Button','%I0.1'],['Emergency_Stop','%I0.2'],['Reset_Button','%I0.3'],
     ['Motor_Run','%Q0.0'],['Run_Lamp','%Q0.1'],['Fault_Lamp','%Q0.2']
   ];
