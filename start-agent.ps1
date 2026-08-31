@@ -7,5 +7,5 @@ $node=Join-Path $root 'runtime\node.exe'
 if(-not (Test-Path $node)){$node=(Get-Command node.exe -ErrorAction SilentlyContinue).Source}
 if(-not $node){Write-Error 'Node.js 18+ is required. Install Node.js, then retry.'; exit 2}
 Push-Location $chat
-try { & $node .\deepseek-chat.mjs } finally { Pop-Location }
+try { $env:TIA_AGENT_PORT='8766'; & $node .\web-server.mjs } finally { Pop-Location }
 exit $LASTEXITCODE
