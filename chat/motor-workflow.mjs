@@ -105,5 +105,5 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(lad?.isError) throw new Error(`tia_build_lad failed: ${JSON.stringify(lad.structuredContent||lad.content||lad)}`);
   report('success',`工作流步骤：Main/OB1 LAD 完成（${Date.now()-ladStarted}ms）`);
   const compile=await run('compilation_software',{deviceName});
-  return {success:true,project:`${effectiveProjectDirectory}\\${name}.ap20`,backupPath,deviceName,orderNumber,steps:stepResults,lad,compile};
+  return {success:true,project:activeProjectPath,backupPath,deviceName,orderNumber,steps:stepResults,lad,compile};
 }
