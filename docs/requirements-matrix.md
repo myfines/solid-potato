@@ -16,6 +16,10 @@
 | 空白电脑安装 | 隔离目录已验证 | `install-agent.ps1` 安装后 doctor 73 工具、manifest 通过 |
 | 全新 Windows 安装 | 未验证 | 需要独立干净系统或虚拟机；当前仅完成安装包、脚本和隔离目录验证 |
 
+### 当前 PLCSIM 只读诊断证据（2026-09-01）
+
+`scan-connection-v20.ps1` 返回 `Mode=PN/IE`、`Interface=Intel(R) Wi-Fi 6 AX101`、`AccessibleDevices=[]`。这证明当前 Openness 会话没有发现可访问的在线目标；不能把已启动的标准 PLCSIM 实例或 `192.168.0.1` 地址当作已经完成握手。在线/下载闭环必须在正确的 PLCSIM 虚拟接口映射完成后再验证。
+
 ## 浏览器 Agent 全流程回归
 
 - 电机启停工程：真实创建隔离工程、CPU、标签、SCL、实例 DB、Main/OB1 LAD、保存和离线编译，0 错误 0 警告。
