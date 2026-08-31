@@ -36,6 +36,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(ladNetworks!==undefined&&!validSimpleLad(ladNetworks)) throw new Error('LAD 网络格式无效：必须提供至少一个包含 contacts 和 coil.addr 的 rung；任务已停止，未使用静默回退网络');
   const stepResults=[];
   let effectiveProjectDirectory=projectDirectory;
+  await mkdir(projectDirectory,{recursive:true});
   const controlFbName=fbName||'Motor_Starter';
   const controlDbName=instanceDb||`${controlFbName}_DB`;
   const run=async(tool, args)=>{
