@@ -7,6 +7,8 @@ import { promisify } from 'node:util';
 const execFileAsync=promisify(execFile);
 process.on('uncaughtException',error=>console.error('[TIA V20 AI] uncaught exception:',error));
 process.on('unhandledRejection',error=>console.error('[TIA V20 AI] unhandled rejection:',error));
+let shuttingDown=false; async function shutdown(){if(shuttingDown)return;shuttingDown=true;try{await client?.close()}catch{}try{await transport?.close()}catch{}process.exit(0)}
+process.once('SIGINT',shutdown); process.once('SIGTERM',shutdown); process.once('exit',()=>{try{transport?.close()}catch{}});
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
