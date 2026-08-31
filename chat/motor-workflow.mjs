@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 const defaultOrderNumber='6ES7 214-1BG40-0XB0';
 function findProjectPath(result){
   const seen=new Set();
@@ -44,6 +45,7 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
       const message=String(createError?.message||createError);
       if(/非空|not empty|cannot be created under/i.test(message)) {
         effectiveProjectDirectory=`${projectDirectory}\\${name}_Run_${Date.now()}`;
+        await mkdir(effectiveProjectDirectory,{recursive:true});
         report('warning',`目标目录已有工程，保留旧工程并改用隔离目录：${effectiveProjectDirectory}`);
         created=await run('projects_create',{name,path:effectiveProjectDirectory,retry:true});
       } else {
