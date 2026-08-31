@@ -5,7 +5,7 @@ $appRoot=if($TargetRoot){[IO.Path]::GetFullPath($TargetRoot)}else{Join-Path ([En
 if($TargetRoot){$sourceFull=([IO.Path]::GetFullPath($source)).TrimEnd([char[]]'\\/'); $targetFull=([IO.Path]::GetFullPath($appRoot)).TrimEnd([char[]]'\\/'); if($targetFull.StartsWith($sourceFull+'\',[StringComparison]::OrdinalIgnoreCase) -or $targetFull -eq $sourceFull){throw 'TargetRoot must not be inside the package source directory.'}}
 $target=Join-Path $appRoot 'current'
 New-Item -ItemType Directory -Force -Path $target | Out-Null
-$allow=@('chat','runtime','docs','scripts','start-agent.ps1','start-agent.cmd','install-agent.ps1','install-agent.cmd','mcp.example.json','THIRD-PARTY-SOURCES.txt','MANIFEST.sha256.json','README.md','TiaV20Agent.exe')
+$allow=@('chat','runtime','docs','scripts','skills','start-agent.ps1','start-agent.cmd','install-agent.ps1','install-agent.cmd','mcp.example.json','THIRD-PARTY-SOURCES.txt','MANIFEST.sha256.json','README.md','TiaV20Agent.exe')
 foreach($name in $allow){$item=Join-Path $source $name; if(Test-Path $item){Copy-Item -LiteralPath $item -Destination $target -Recurse -Force}}
 Write-Output "Installed proxy agent: $target"
 Write-Output "Start with: $(Join-Path $target 'start-agent.cmd')"
