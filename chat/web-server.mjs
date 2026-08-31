@@ -137,4 +137,5 @@ const ladPersistGuard=invokeTool; invokeTool=async(name,args)=>{const result=awa
 let lastTaskSignature='',lastTaskOutput='',sameTaskStreak=0;
 const progressGuardBase=callToolWithTimeout; callToolWithTimeout=async(name,args,ms)=>{const signature=name+':'+JSON.stringify(args||{});const result=await progressGuardBase(name,args,ms);const output=JSON.stringify(result);if(signature===lastTaskSignature&&output===lastTaskOutput)sameTaskStreak++;else{lastTaskSignature=signature;lastTaskOutput=output;sameTaskStreak=1}if(sameTaskStreak>=4)throw Error(`检测到 ${name} 连续返回完全相同结果，任务无进展，已停止；可修改参数或补充上下文后重试`);return result};
 const contextRunBase=run; run=async(text,allow)=>{lastTaskSignature='';lastTaskOutput='';sameTaskStreak=0;return contextRunBase(text,allow)};
+app.prependListener('request',(req,res)=>{if(req.method==='GET'&&req.url==='/'&&!activeRun){events.length=0;lastResult=''}});
 app.listen(Number(process.env.TIA_AGENT_PORT||8765),'127.0.0.1',()=>console.error('[TIA V20 AI] ready'));
