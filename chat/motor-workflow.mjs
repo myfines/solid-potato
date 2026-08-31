@@ -26,7 +26,7 @@ function findTagTableName(result){
 }
 async function hasEntries(path){try{return (await readdir(path)).length>0}catch{return false}}
 async function resolveProjectFile(candidates){for(const candidate of candidates){try{await access(candidate);return candidate}catch{}}return candidates[0]}
-function validSimpleLad(networks){return Array.isArray(networks)&&networks.length>0&&networks.every(n=>Array.isArray(n?.rungs)&&n.rungs.length>0&&n.rungs.every(r=>Array.isArray(r.contacts)&&r.contacts.every(c=>typeof c?.addr==='string')&&(!r.coil||typeof r.coil.addr==='string')))}
+function validSimpleLad(networks){return Array.isArray(networks)&&networks.length>0&&networks.every(n=>Array.isArray(n?.rungs)&&n.rungs.length>0&&n.rungs.every(r=>Array.isArray(r.contacts)&&r.contacts.length>0&&r.contacts.every(c=>typeof c?.addr==='string')&&r.coil&&typeof r.coil.addr==='string'))}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}, fbName='Motor_Starter', instanceDb='Motor_Starter_DB', tags:customTags, sclContent, ladNetworks}) {
   if(!String(name||'').trim()) throw new Error('项目名称不能为空');
