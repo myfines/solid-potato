@@ -1,4 +1,4 @@
-import { mkdir, readdir } from 'node:fs/promises';
+import { mkdir, readdir, access } from 'node:fs/promises';
 const defaultOrderNumber='6ES7 214-1BG40-0XB0';
 function findProjectPath(result){
   const seen=new Set();
@@ -25,6 +25,7 @@ function findTagTableName(result){
   return visit(result);
 }
 async function hasEntries(path){try{return (await readdir(path)).length>0}catch{return false}}
+async function resolveProjectFile(candidates){for(const candidate of candidates){try{await access(candidate);return candidate}catch{}}return candidates[0]}
 function validSimpleLad(networks){return Array.isArray(networks)&&networks.length>0&&networks.every(n=>Array.isArray(n?.rungs)&&n.rungs.length>0&&n.rungs.every(r=>Array.isArray(r.contacts)&&r.contacts.every(c=>typeof c?.addr==='string')&&(!r.coil||typeof r.coil.addr==='string')))}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}, fbName='Motor_Starter', instanceDb='Motor_Starter_DB', tags:customTags, sclContent, ladNetworks}) {
@@ -70,7 +71,8 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
       created=await run('projects_create',{name,path:effectiveProjectDirectory});
       }
     }
-    const createdPath=findProjectPath(created)||`${effectiveProjectDirectory}\\${name}.ap20`;
+    const createdHint=findProjectPath(created)||`${effectiveProjectDirectory}\\${name}.ap20`;
+    const createdPath=await resolveProjectFile([createdHint,`${effectiveProjectDirectory}\\${name}.ap20`,`${effectiveProjectDirectory}\\${name}\\${name}.ap20`,`${projectDirectory}\\${name}\\${name}.ap20`]);
     let opened=false; let lastOpenError;
     const openPaths=[createdPath,projectDirectory];
     for(const delay of [1500,4000,8000]) {
