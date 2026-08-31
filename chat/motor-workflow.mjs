@@ -33,6 +33,14 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(!String(projectDirectory||'').match(/^[A-Za-z]:[\\/]/)) throw new Error('项目目录必须是绝对路径');
   if(!String(backupPath||'').match(/^[A-Za-z]:[\\/]/)) throw new Error('备份目录必须是绝对路径');
   if(String(orderNumber||'').trim()!==defaultOrderNumber){report('warning',`CPU 料号 ${orderNumber} 不适用于当前 V20 流程，已自动修正为 ${defaultOrderNumber}`);orderNumber=defaultOrderNumber;}
+  // TIA device names are identifiers, not display titles. Models sometimes
+  // copy the project title (including spaces) into this field. Normalize it
+  // before the irreversible device-create call and make the correction visible.
+  if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(String(deviceName||''))){
+    const original=String(deviceName||'');
+    deviceName='PLC_1';
+    report('warning',`设备名称“${original}”不是 TIA 合法标识符，已自动修正为 ${deviceName}`);
+  }
   if(ladNetworks!==undefined&&!validSimpleLad(ladNetworks)) throw new Error('LAD 网络格式无效：必须提供至少一个包含 contacts 和 coil.addr 的 rung；任务已停止，未使用静默回退网络');
   const stepResults=[];
   let effectiveProjectDirectory=projectDirectory;
