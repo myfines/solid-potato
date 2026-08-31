@@ -20,7 +20,7 @@ Copy-Item -LiteralPath (Join-Path $root 'chat\lad-adapter\generator.mjs'),(Join-
 Copy-Item -LiteralPath (Join-Path $root 'chat\node_modules') -Destination (Join-Path $dist 'chat') -Recurse
 Copy-Item -LiteralPath (Join-Path $root 'docs\validation.md'),(Join-Path $root 'docs\roadmap.md'),(Join-Path $root 'docs\first-connection.md'),(Join-Path $root 'docs\requirements-matrix.md'),(Join-Path $root 'docs\BEGINNER-GUIDE.md'),(Join-Path $root 'docs\USER-INSTALL-GUIDE.md'),(Join-Path $root 'docs\AUTO-INSTALL-DESIGN.md'),(Join-Path $root 'docs\full-flow-test-20260829.md'),(Join-Path $root 'docs\FINAL-TEST-REPORT.md') -Destination (Join-Path $dist 'docs')
 if(Test-Path (Join-Path $root 'docs\third-party.md')){Copy-Item -LiteralPath (Join-Path $root 'docs\third-party.md') -Destination (Join-Path $dist 'docs')}
-Copy-Item -LiteralPath (Join-Path $root 'scripts\preflight-v20.ps1') -Destination (Join-Path $dist 'scripts')
+Copy-Item -LiteralPath (Join-Path $root 'scripts\preflight-v20.ps1'),(Join-Path $root 'scripts\build-user-release.ps1') -Destination (Join-Path $dist 'scripts')
 Copy-Item -LiteralPath (Join-Path $root 'scripts\make-manifest.ps1') -Destination (Join-Path $dist 'scripts')
 Copy-Item -LiteralPath (Join-Path $root 'scripts\verify-manifest.ps1') -Destination (Join-Path $dist 'scripts')
 Copy-Item -LiteralPath (Join-Path $root 'scripts\diagnose-connection-v20.ps1'),(Join-Path $root 'scripts\scan-connection-v20.ps1') -Destination (Join-Path $dist 'scripts')
