@@ -15,7 +15,7 @@ internal static class Launcher
         var port=8766;
         if(IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Any(x=>x.Port==port))
         {
-            Console.Error.WriteLine($"端口 {port} 已被其他实例占用，请先关闭旧的 TIA V20 AI 助手实例。");
+            Console.Error.WriteLine(string.Format("端口 {0} 已被其他实例占用，请先关闭旧的 TIA V20 AI 助手实例。", port));
             return 4;
         }
         var info=new ProcessStartInfo(node,"\""+chat+"\""){WorkingDirectory=root,UseShellExecute=false,CreateNoWindow=false};
