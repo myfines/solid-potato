@@ -77,6 +77,7 @@ powershell.exe -ExecutionPolicy Bypass -File .\scripts\setup-environment.ps1
 ## 文档
 
 - [新手完整教程](docs/BEGINNER-GUIDE.md)
+- [用户安装与使用说明](docs/USER-INSTALL-GUIDE.md)
 - [自动安装设计](docs/AUTO-INSTALL-DESIGN.md)
 - [首次连接说明](docs/first-connection.md)
 - [需求验收矩阵](docs/requirements-matrix.md)
