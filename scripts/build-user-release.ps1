@@ -10,6 +10,11 @@ foreach($required in @('TiaV20Agent.exe','README.md','MANIFEST.sha256.json','doc
 }
 if(-not $OutputZip){$OutputZip=Join-Path (Split-Path -Parent $PackageRoot) 'TiaV20Agent-UserRelease.zip'}
 $OutputZip=[IO.Path]::GetFullPath($OutputZip)
+if(Test-Path -LiteralPath $OutputZip){
+  $dir=Split-Path -Parent $OutputZip
+  $stem=[IO.Path]::GetFileNameWithoutExtension($OutputZip)
+  $OutputZip=Join-Path $dir ($stem+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')+'.zip')
+}
 Compress-Archive -Path (Join-Path $PackageRoot '*') -DestinationPath $OutputZip -CompressionLevel Fastest -Force
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip=[IO.Compression.ZipFile]::OpenRead($OutputZip)
