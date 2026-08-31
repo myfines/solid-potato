@@ -50,7 +50,7 @@ history[0].content+=' 如果 projects_get_session_info 表明没有打开工程�
 history[0].content+=' 若用户明确点名 tia_build_lad 或要求生成梯形图，必须实际调用 tia_build_lad 并等待 Imported/Compiled 结果；在该工具成功或明确失败前禁止输出“任务完成”。读取项目或调用 devices_list 不能替代 LAD 验收。';
 history[0].content+=' 检查既有工程时，禁止用 tia_build_lad 生成工具代替读取，也禁止反复调用 blocks_editor_open_block；读取到设备、块、标签、源代码/指纹并完成编译后，立即汇总实际结果和文件路径。若无法通过 MCP 读取 LAD 图形内容，必须明确说明该限制，不要继续思考或重复工具调用。';
 function repairHistory(){for(let i=0;i<history.length;i++){const m=history[i];if(m?.role!=='assistant'||!Array.isArray(m.tool_calls)||!m.tool_calls.length)continue;const ids=new Set();let j=i+1;while(j<history.length&&history[j]?.role==='tool'){if(history[j].tool_call_id)ids.add(history[j].tool_call_id);j++}const missing=m.tool_calls.filter(c=>c.id&&!ids.has(c.id));if(missing.length){history.splice(j,0,...missing.map(c=>({role:'tool',tool_call_id:c.id,content:JSON.stringify({error:'上一轮任务被中断，工具未执行'})})));i=j+missing.length-1}}}if(history.length>1){history.splice(1)}
-const dangerous=n=>/create|delete|import|generate|write|apply|compile|save|move|plug|set|open|close|download|online/i.test(n);
+const dangerous=n=>/create|delete|import|generate|write|apply|compile|save|move|plug|set|open|close|download|online|build_.*project/i.test(n);
 const safeRead=n=>n==='projects_open'||n==='projects_get_session_info'||n==='utilities_get_project_info'||n==='devices_list'||n==='tags_list'||n==='blocks_list';
 function log(kind,text){events.push({index:events.length,time:Date.now(),kind,text});if(events.length>10000)events.shift()}
 async function invokeTool(name,toolArgs){
