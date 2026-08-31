@@ -57,7 +57,10 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   const session=await run('projects_get_session_info',{});
   let activeProjectPath=findProjectPath(session)||'';
   const sessionText=JSON.stringify(session);
-  if(!/hasOpenProject[^a-zA-Z]+true/.test(sessionText)) {
+  // An explicit isolated-project request must never reuse the current
+  // session, even when its project name happens to match. Reuse was causing
+  // duplicate-device errors on the next task.
+  if(true) {
     let created;
     if(await hasEntries(`${projectDirectory}\\${name}`)) {
       effectiveProjectDirectory=`${projectDirectory}\\${name}_Run_${Date.now()}`;
