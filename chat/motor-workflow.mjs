@@ -29,6 +29,7 @@ async function resolveProjectFile(candidates){for(const candidate of candidates)
 function validSimpleLad(networks){return Array.isArray(networks)&&networks.length>0&&networks.every(n=>Array.isArray(n?.rungs)&&n.rungs.length>0&&n.rungs.every(r=>Array.isArray(r.contacts)&&r.contacts.every(c=>typeof c?.addr==='string')&&(!r.coil||typeof r.coil.addr==='string')))}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}, fbName='Motor_Starter', instanceDb='Motor_Starter_DB', tags:customTags, sclContent, ladNetworks}) {
+  if(String(orderNumber||'').trim()!==defaultOrderNumber) throw new Error(`CPU 料号不匹配：当前 V20 工作流只允许 ${defaultOrderNumber}，收到 ${orderNumber}`);
   const stepResults=[];
   let effectiveProjectDirectory=projectDirectory;
   const controlFbName=fbName||'Motor_Starter';
