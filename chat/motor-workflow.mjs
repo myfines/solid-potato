@@ -27,6 +27,11 @@ function findTagTableName(result){
 async function hasEntries(path){try{return (await readdir(path)).length>0}catch{return false}}
 async function resolveProjectFile(candidates){for(const candidate of candidates){try{await access(candidate);return candidate}catch{}}return candidates[0]}
 function validSimpleLad(networks){return Array.isArray(networks)&&networks.length>0&&networks.every(n=>Array.isArray(n?.rungs)&&n.rungs.length>0&&n.rungs.every(r=>Array.isArray(r.contacts)&&r.contacts.length>0&&r.contacts.every(c=>typeof c?.addr==='string')&&r.coil&&typeof r.coil.addr==='string'))}
+function normalizeLadAddresses(networks,tags){
+  const map=new Map((tags||[]).map(tag=>Array.isArray(tag)?[String(tag[0]),String(tag[1])]:[String(tag?.tagName||tag?.name||''),String(tag?.logicalAddress||tag?.address||tag?.addr||'')]));
+  const address=value=>map.get(String(value))||value;
+  return Array.isArray(networks)?networks.map(n=>({...n,rungs:Array.isArray(n?.rungs)?n.rungs.map(r=>({...r,contacts:Array.isArray(r.contacts)?r.contacts.map(c=>({...c,addr:address(c.addr)})):r.contacts,coil:r.coil?({...r.coil,addr:address(r.coil.addr)}):r.coil})):n.rungs})):networks;
+}
 
 export async function buildMotorProject({client, name, projectDirectory, backupPath, deviceName='PLC_1', orderNumber=defaultOrderNumber, call, report=()=>{}, fbName='Motor_Starter', instanceDb='Motor_Starter_DB', tags:customTags, sclContent, ladNetworks}) {
   if(!String(name||'').trim()) throw new Error('项目名称不能为空');
@@ -41,7 +46,10 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
     deviceName='PLC_1';
     report('warning',`设备名称“${original}”不是 TIA 合法标识符，已自动修正为 ${deviceName}`);
   }
-  if(ladNetworks!==undefined&&!validSimpleLad(ladNetworks)) throw new Error('LAD 网络格式无效：必须提供至少一个包含 contacts 和 coil.addr 的 rung；任务已停止，未使用静默回退网络');
+  if(ladNetworks!==undefined){
+    ladNetworks=normalizeLadAddresses(ladNetworks,customTags);
+    if(!validSimpleLad(ladNetworks)) throw new Error('LAD 网络格式无效：必须提供至少一个包含 contacts 和 coil.addr 的 rung；任务已停止，未使用静默回退网络');
+  }
   const stepResults=[];
   let effectiveProjectDirectory=projectDirectory;
   await mkdir(projectDirectory,{recursive:true});
