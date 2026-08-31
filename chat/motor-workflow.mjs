@@ -124,5 +124,15 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   if(lad?.isError) throw new Error(`tia_build_lad failed: ${JSON.stringify(lad.structuredContent||lad.content||lad)}`);
   report('success',`工作流步骤：Main/OB1 LAD 完成（${Date.now()-ladStarted}ms）`);
   const compile=await run('compilation_software',{deviceName});
+  // Never report a successful workflow with a guessed path. Re-resolve and
+  // verify the actual .ap20 artifact created by TIA before returning.
+  const verifiedProjectPath=await resolveProjectFile([
+    activeProjectPath,
+    `${effectiveProjectDirectory}\\${name}.ap20`,
+    `${effectiveProjectDirectory}\\${name}\\${name}.ap20`,
+    `${projectDirectory}\\${name}\\${name}.ap20`
+  ]);
+  try { await access(verifiedProjectPath); } catch { throw new Error(`工程创建步骤已返回成功，但磁盘上找不到真实 .ap20 文件：${verifiedProjectPath}`); }
+  activeProjectPath=verifiedProjectPath;
   return {success:true,project:activeProjectPath,backupPath,deviceName,orderNumber,steps:stepResults,lad,compile};
 }
