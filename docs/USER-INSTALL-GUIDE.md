@@ -7,6 +7,12 @@
 - 一个可用的 DeepSeek API Key。
 - 第一次使用时不要同时打开多个 TIA Portal 或多个本助手窗口。
 
+### 先判断电脑是否已经安装 TIA V20
+
+安装包本身不包含 Siemens TIA Portal。双击安装包里的 `scripts\preflight-v20.ps1`，如果结果显示 `ready: true`，说明本机已找到 V20 的 Openness API，可以继续安装助手；如果显示缺少 TIA API 或 `tiaPortalRunning: true`，请先关闭 TIA Portal 窗口并重新检查。不要从网上下载来路不明的“破解版 TIA”或替换安装包里的 DLL。
+
+如果电脑没有 TIA V20，先使用 Siemens 官方安装介质完成 TIA Portal V20 和需要的 PLCSIM 组件安装；安装完再运行本助手。助手不会删除、覆盖或卸载已有 TIA 版本。
+
 ## 第一次安装
 
 1. 解压整个压缩包到一个固定位置，例如 `D:\TIA-V20-AI`。
@@ -16,6 +22,8 @@
 5. 安装完成后，双击 `TiaV20Agent.exe`。
 6. 浏览器打开后，在右侧填写 DeepSeek API Key，点击“保存 API Key”。Key 只保存在本机配置中。
 7. 默认先关闭“无限模式”。测试工程确认安全后，才可以打开“无限模式”。
+
+权限窗口只用于首次或版本更新时登记 Openness 白名单。正常运行阶段不应反复出现 UAC；如果每次启动都弹出，请停止运行，确认没有从多个解压目录启动不同版本，并重新执行一次 `install-agent.cmd`。
 
 ## 第一次对话示例
 
