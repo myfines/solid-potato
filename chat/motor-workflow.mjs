@@ -99,7 +99,12 @@ export async function buildMotorProject({client, name, projectDirectory, backupP
   } else if(!sessionText.includes(name)) {
     throw new Error('TIA 当前已有其他工程打开；为保护用户工程，已停止。请关闭当前工程后再创建隔离项目，或明确指定复用当前工程。');
   }
-  await run('devices_create',{deviceName,orderNumber,dryRun:false});
+  const createdDevice=await run('devices_create',{deviceName,orderNumber,dryRun:false});
+  const returnedDeviceName=createdDevice?.structuredContent?.data?.deviceName||createdDevice?.structuredContent?.deviceName;
+  if(typeof returnedDeviceName==='string'&&returnedDeviceName.trim()&&returnedDeviceName!==deviceName){
+    report('warning',`TIA 实际返回设备名称“${returnedDeviceName}”，后续步骤改用该名称`);
+    deviceName=returnedDeviceName;
+  }
   const tagTables=await run('tags_tagtable_list',{deviceName,includeCounts:false});
   const tagTableName=findTagTableName(tagTables)||'System';
   const tags=customTags?.length?customTags.map(tag=>Array.isArray(tag)?tag:[tag.tagName||tag.name,tag.logicalAddress||tag.address||tag.addr]):[

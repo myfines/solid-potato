@@ -141,4 +141,12 @@ const progressGuardBase=callToolWithTimeout; callToolWithTimeout=async(name,args
 const contextRunBase=run; run=async(text,allow)=>{lastTaskSignature='';lastTaskOutput='';sameTaskStreak=0;return contextRunBase(text,allow)};
 app.prependListener('request',(req,res)=>{if(req.method==='GET'&&req.url==='/'&&!activeRun){events.length=0;lastResult=''}});
 const pathRepairBase=callToolWithTimeout; callToolWithTimeout=async(name,args,ms)=>{if((name==='tia_build_motor_project'||name==='tia_build_custom_project')&&args?.backupPath){const backup=String(args.backupPath).replaceAll('/','\\').toLowerCase();const packageRoot=String(root).replaceAll('/','\\').replace(/[\\]+$/,'').toLowerCase();if(backup===packageRoot||backup.startsWith(packageRoot+'\\')){const projectDir=String(args.projectDirectory||'').replace(/[\\]+$/,'');const projectName=String(args.name||'Project').replace(/[<>:"/\\|?*]/g,'_');const safeDir=/^[A-Za-z]:[\\/]/.test(projectDir)&&!projectDir.toLowerCase().startsWith(packageRoot)?projectDir:'E:\\TIA_Test_Backups';args={...args,backupPath:`${safeDir}\\${projectName}_Backup`};log('warning',`检测到备份路径落在安装目录内，已自动改用安全备份目录：${args.backupPath}`)}}return pathRepairBase(name,args,ms)};
+// Keep the retry guard aligned with any safe path normalization performed by
+// the outer wrappers. This preserves recovery when the Agent corrects a
+// directory or backup argument after a failed attempt.
+const finalCallWithTimeout=callToolWithTimeout;
+callToolWithTimeout=async(name,args,ms)=>{
+  if(name==='tia_build_motor_project')motorArgsFingerprint=[args?.name,args?.projectDirectory,args?.backupPath].map(v=>String(v||'')).join('|');
+  return finalCallWithTimeout(name,args,ms);
+};
 app.listen(Number(process.env.TIA_AGENT_PORT||8765),'127.0.0.1',()=>console.error('[TIA V20 AI] ready'));
