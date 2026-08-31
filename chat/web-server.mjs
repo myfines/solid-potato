@@ -144,6 +144,12 @@ const pathRepairBase=callToolWithTimeout; callToolWithTimeout=async(name,args,ms
 // Keep the retry guard aligned with any safe path normalization performed by
 // the outer wrappers. This preserves recovery when the Agent corrects a
 // directory or backup argument after a failed attempt.
+const lifecycleInvoke=invokeTool;
+invokeTool=async(name,args)=>{
+  const result=await lifecycleInvoke(name,args);
+  if(name==='projects_close'&&!result?.isError){projectCreateUsed=false;projectOpened=false;}
+  return result;
+};
 const finalCallWithTimeout=callToolWithTimeout;
 callToolWithTimeout=async(name,args,ms)=>{
   if(name==='tia_build_motor_project')motorArgsFingerprint=[args?.name,args?.projectDirectory,args?.backupPath].map(v=>String(v||'')).join('|');
