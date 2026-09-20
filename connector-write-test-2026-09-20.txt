@@ -1,0 +1,3 @@
+ChatGPT connector write test.
+Created intentionally to verify GitHub write access on 2026-09-20.
+Safe to delete.
